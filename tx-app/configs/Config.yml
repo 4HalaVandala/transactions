@@ -1,0 +1,13 @@
+port: "8000"
+
+db: 
+  username: "postgres"
+  host: "127.0.0.1"
+  port: "5555"
+  dbname: "postgres"
+  sslmode: "disable"
+
+rabbitmq:
+ username:
+ host:
+ port:
