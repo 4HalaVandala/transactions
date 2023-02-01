@@ -1,4 +1,4 @@
-FROM golang:1.19
+FROM golang:1.18
 
 ENV APP_NAME rmq-producer
 
