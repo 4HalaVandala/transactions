@@ -59,5 +59,3 @@ func (h *Handler) GetTransactionById(c *gin.Context) {
 	c.JSON(http.StatusOK, tx)
 
 }
-
-// validate an email

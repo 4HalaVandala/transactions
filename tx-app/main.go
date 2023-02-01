@@ -7,10 +7,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/4halavandala/transactions/tx-app"
+	"github.com/4halavandala/transactions/tx-app/pkg/consts"
 	"github.com/4halavandala/transactions/tx-app/pkg/handler"
 	"github.com/4halavandala/transactions/tx-app/pkg/repository"
 	"github.com/4halavandala/transactions/tx-app/pkg/service"
+	"github.com/4halavandala/transactions/tx-app/pkg/utils"
+	"github.com/4halavandala/transactions/tx-app/server"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -64,10 +66,27 @@ func main() {
 	if err := db.Close(); err != nil {
 		logrus.Errorf("error occured on db connection close: %s", err.Error())
 	}
+
+	// Rabbit mq connection
+	connectionString := utils.GetEnvVar("RMQ_URL")
+
+	exampleQueue := utils.RMQConsumer{
+		Queue:            consts.EXAMPLE_QUEUE,
+		ConnectionString: connectionString,
+		MsgHandler:       handler.HandleExample,
+	}
+	// Start consuming message on the specified queues
+	forever := make(chan bool)
+
+	go exampleQueue.Consume()
+
+	// Multiple listeners can be specified here
+
+	<-forever
 }
 
 func initConfig() error {
-	viper.AddConfigPath("tx-app/configs")
+	viper.AddConfigPath("configs")
 	viper.SetConfigName("Config")
 
 	return viper.ReadInConfig()
